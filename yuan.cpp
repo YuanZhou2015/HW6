@@ -446,32 +446,14 @@ void orientation_check(string orientation,stringstream &slog,
         n=orientation.size();
         orientation = uppercase (orientation);
         while(j<n){
-            if (orientation[j]!= '1' && orientation[j]!='2' && orientation[j]!= '3'){
-                while (j<n){
-                    if (orientation[j]!='N' && orientation[j]!='E' && orientation[j]!= 'Z'){
-                        sout = "Entry # ";
-                        slog << sout;
-                        F=2;
-                        print_output(outputfile, logfile, slog.str(), sout, F);
-                        sout = itos(i);
-                        slog << sout;
-                        F=2;
-                        print_output(outputfile, logfile, slog.str(), sout, F);
-                        sout = " ignored. Invalid orientation. \n";
-                        slog << sout;
-                        F=2;
-                        print_output(outputfile, logfile, slog.str(), sout, F);
-                        flag=1;
-                        j++;
-                    }
-                    else
-                        j++;
-                }
-            }
-            else{
+            if(isdigit(orientation[j]))
                 j++;
+            else{
+                j=0;
                 while(j<n){
-                    if (orientation[j]!= '1' && orientation[j]!='2' && orientation[j]!= '3'){
+                    if(isalpha(orientation[j]))
+                        j++;
+                    else{
                         sout = "Entry # ";
                         slog << sout;
                         F=2;
@@ -487,10 +469,32 @@ void orientation_check(string orientation,stringstream &slog,
                         flag=1;
                         j++;
                     }
-                    else
-                        j++;
                 }
+                if(flag==1) break;
             }
+        }
+        j=0;
+        while(j<n){
+            if ((orientation[j]!= '1' && orientation[j]!='2' && orientation[j]!= '3')
+                &&(orientation[j]!='N' && orientation[j]!='E' && orientation[j]!= 'Z')){
+                 sout = "Entry # ";
+                        slog << sout;
+                        F=2;
+                        print_output(outputfile, logfile, slog.str(), sout, F);
+                        sout = itos(i);
+                        slog << sout;
+                        F=2;
+                        print_output(outputfile, logfile, slog.str(), sout, F);
+                        sout = " ignored. Invalid orientation. \n";
+                        slog << sout;
+                        F=2;
+                        print_output(outputfile, logfile, slog.str(), sout, F);
+                        flag=1;
+                        j++;
+            }
+            else
+                j++;
+            if (flag==1)break;
         }
     }
 }
@@ -591,7 +595,7 @@ int main(){
     Signal Signaldata[MAXSIZE];
     int size = 0, i=1,m=0, flag1=0,flag2=0,flag3=0,flag4=0,flag5=0;
     string networkcode, stationcode, typeofband, typeofinstru, orientation;
-    while (!inputfile.eof() && size < MAXSIZE ){              
+    while (inputfile != NULL && size < MAXSIZE ){              
         inputfile >> networkcode;
         networkcode_check(networkcode,slog,ss,i,flag1);
         inputfile >> stationcode;
