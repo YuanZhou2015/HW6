@@ -96,8 +96,62 @@ void open_output( string outputfilename, ofstream &outputfile, stringstream &slo
     }
 }
 
+enum Months{
+    January = 1,
+    February,
+    March,
+    April,
+    May,
+    June,
+    July,
+    Auguest,
+    September,
+    October,
+    November,
+    December
+};
 
-void date_check(string date, stringstream & slog){
+Months int_to_months(int m){
+    if (m == 1) return January;
+    if (m == 2) return February;
+    if (m == 3) return March;
+    if (m == 4) return April;
+    if (m == 5) return May;
+    if (m == 6) return June;
+    if (m == 7) return July;
+    if (m == 8) return Auguest;
+    if (m == 9) return September;
+    if (m == 10) return October;
+    if (m == 11) return November;
+    if (m == 12) return December;
+
+}
+
+string months_to_string(Months m){
+    switch(m){
+        case January: return "January";
+        case February: return "February";
+        case March: return "March";
+        case April: return "April";
+        case May: return "May";
+        case June: return "June";
+        case July: return "July";
+        case Auguest: return "Auguest";
+        case September: return "September";
+        case October: return "October";
+        case November: return "November";
+        case December: return "December";
+    }
+    exit(EXIT_FAILURE);
+}
+
+struct Date_format{
+    string date;
+    string month;
+    string year;
+};
+
+void set_date(string date, stringstream & slog){
     string sout;
     ofstream outputfile, logfile;
     if (date.size()!=10){
@@ -122,11 +176,31 @@ void date_check(string date, stringstream & slog){
         print_output(outputfile, logfile, slog.str(), sout, F);
         exit(0);
     }
-
+    string d1,d2,d3,d4,d5,d6,d7,d8;
+    d1 = date[0];
+    d2 = date[1];
+    d3 = date[3];
+    d4 = date[4];
+    d5 = date[6];
+    d6 = date[7];
+    d7 = date[8];
+    d8 = date[9];
+    string month = d1+d2;
+    int m=atoi(month.c_str());
+    month = months_to_string(int_to_months(m));
+    Date_format Date;
+    Date.date = d3+d4;
+    Date.month = month;
+    Date.year = d5 + d6+ d7 + d8;
     return;
 }
 
-string print_out_month(string date){
+/*string print_out_month(string date){
+    string d1,d2;
+    d1 = date[0];
+    d2 = date[1];
+    string month = d1+d2;
+    int Q=atoi(month.c_str());
     if ((date[0]==48) && (date[1]==49))
         return "January ";
     if ((date[0]==48) && (date[1]==50))
@@ -151,9 +225,9 @@ string print_out_month(string date){
         return "November ";
     if ((date[0]==49) && (date[1]==50))
         return "December ";
-}
+}*/
 
-void time_check(string time, stringstream & slog){
+void set_time(string time, stringstream & slog){
     string sout;
     ofstream outputfile, logfile;
     if (time.size()!=12){
@@ -184,7 +258,7 @@ void time_check(string time, stringstream & slog){
     return;
 }
 
-void timezone_check(string timezone, stringstream &slog){
+void set_timezone(string timezone, stringstream &slog){
     string sout;
     ofstream outputfile, logfile;
     if (timezone.size()!=3){
@@ -204,11 +278,11 @@ void timezone_check(string timezone, stringstream &slog){
     return;
 }
 
-enum magnitude{ 
-    Ml, 
-    Ms, 
-    Mb, 
-    Mw 
+enum magnitude_type{ 
+    ML, 
+    MS, 
+    MB, 
+    MW 
 };
 // useful function to convert a string to uppercase 
 string uppercase (string &s){
@@ -223,7 +297,7 @@ bool is_valid_magnitude (string s) {
     return((ss=="ML")||(ss=="MS")||(ss=="MB")||(ss=="MW"));
 }
 
-void magnitude_check(string magnitude, stringstream &slog){
+void set_magnitude(string magnitude, stringstream &slog){
     string sout;
     ofstream outputfile, logfile;
     if(!is_valid_magnitude (magnitude)){
@@ -235,13 +309,33 @@ void magnitude_check(string magnitude, stringstream &slog){
     }
 }
 
+magnitude_type string_to_magnitude_type (string s){
+    string ss = uppercase (s);
+    if (ss == "ML") return ML;
+    if (ss == "MS") return MS;
+    if (ss == "MB") return MB;
+    if (ss == "MW") return MW;
+};
+
 string itos(int i) {
     stringstream s;
     s << i;
     return s.str();
 }
 
-void networkcode_check(string networkcode, stringstream &slog, 
+enum Network_code{
+    CE,
+    CI,
+    FA,
+    NP,
+    WR
+};
+
+bool is_valid_network_code(string s){
+    return ((s=="CE")||(s=="CI")||(s=="FA")||(s=="NP")||(s=="WR"));
+}
+
+void set_networkcode(string networkcode, stringstream &slog, 
                        stringstream &ss, int &i, int &flag){
     string sout;
     ofstream outputfile, logfile;
@@ -263,8 +357,7 @@ void networkcode_check(string networkcode, stringstream &slog,
         flag=1;
     }
 
-    if (networkcode!= "CE" && networkcode!= "CI" && networkcode!="FA" 
-        && networkcode!="NP" && networkcode!="WR"){
+    if (!is_valid_network_code(networkcode)){
         sout = "Entry # ";
         slog << sout;
         F=2;
@@ -282,7 +375,7 @@ void networkcode_check(string networkcode, stringstream &slog,
     return;
 }
 
-void stationcode_check(string stationcode,stringstream &slog,
+void set_stationcode(string stationcode,stringstream &slog,
                        stringstream &ss, int &i, int &flag){
     string sout;
     ofstream outputfile, logfile;
@@ -333,7 +426,7 @@ void stationcode_check(string stationcode,stringstream &slog,
             slog << sout;
             F=2;
             print_output(outputfile, logfile, slog.str(), sout, F);
-            sout = " ignored. Invalid network. \n";
+            sout = " ignored. Invalid station code. \n";
             slog << sout;
             F=2;
             print_output(outputfile, logfile, slog.str(), sout, F);
@@ -347,7 +440,7 @@ bool is_valid_typeofband (string s) {
     string ss = uppercase(s);
     return((ss=="LONG-PERIOD")||(ss=="SHORT-PERIOD")||(ss=="BROADBAND"));
 }
-void typeofband_check(string &typeofband,stringstream &slog,
+void set_typeofband(string &typeofband,stringstream &slog,
                       stringstream &ss, int &i, int flag){
     string sout;
     ofstream outputfile, logfile;
@@ -386,7 +479,7 @@ bool is_valid_typeofinstru (string s) {
     string ss = uppercase(s);
     return((ss=="HIGH-GAIN")||(ss=="LOW-GAIN")||(ss=="ACCELEROMETER"));
 }
-void typeofinstru_check(string &typeofinstru,stringstream &slog, 
+void set_typeofinstru(string &typeofinstru,stringstream &slog, 
                         stringstream &ss, int&i, int &flag){
     string sout;
     ofstream outputfile, logfile;
@@ -420,7 +513,7 @@ void typeofinstru_check(string &typeofinstru,stringstream &slog,
     }
 }
 
-void orientation_check(string orientation,stringstream &slog,
+void set_orientation(string orientation,stringstream &slog,
                        stringstream &ss, int &i, int &flag){
     string sout;
     ofstream outputfile, logfile;
@@ -499,6 +592,17 @@ void orientation_check(string orientation,stringstream &slog,
     }
 }
 
+struct earthquake{
+    string ID;
+    Date_format date;
+    string time;
+    string timezone;
+    string earthquake_name;
+    string epicenter;
+    magnitude_type magnitudetype;
+    string magnitude;    
+};
+
 struct Signal {
     string NT;
     string STN;
@@ -513,9 +617,8 @@ int main(){
     string inputfilename, logfilename, outputfilename;
     string sout, EventID, date, time, timezone,information;
     stringstream slog;
-  
-    int flag=0,F;
 
+    int flag=0,F;
     open_log("yuan.log",logfile);
     logfile.close();
     sout = "> Enter input file name: ";
@@ -540,21 +643,26 @@ int main(){
     logfile.close();
     if (flag ==1)
     return 0;
+   
+    //Reading the header
+
     inputfile >> EventID;
     inputfile >> date;
-    date_check(date,slog);  
+    set_date(date,slog);  
     inputfile >> time;
-    time_check(time,slog);
+    set_time(time,slog);
     inputfile >> timezone;
-    timezone_check(timezone,slog);
+    set_timezone(timezone,slog);
     string name;
     getline(inputfile,name);
     getline(inputfile,name);
     double longitude, latitude,depth;
     inputfile >> longitude >> latitude >> depth;
+    stringstream epicenter;
+    epicenter << "(" << longitude << ", " << latitude << ", " << depth << ")";
     string magnitude;
     inputfile >> magnitude;
-    magnitude_check(magnitude, slog);
+    set_magnitude(magnitude, slog);
     float magnitudevalue;
     inputfile >> magnitudevalue;
     if (magnitudevalue<0){
@@ -565,6 +673,15 @@ int main(){
         flag = 1;
         return 0;
     }
+    earthquake earthquakeinfor;
+    earthquakeinfor.ID = EventID;
+   // earthquakeinfor.date = date;
+    earthquakeinfor.time = time;
+    earthquakeinfor.timezone = timezone;
+    earthquakeinfor.earthquake_name = name;
+    earthquakeinfor.epicenter = epicenter.str();
+    earthquakeinfor.magnitudetype = string_to_magnitude_type(magnitude);
+  //  earthquakeinfor.magnitude = magnitudevalue;
 
     // If the header read successfully, then open the output file.
     // Print the header information into output file.
@@ -575,11 +692,25 @@ int main(){
     sout = "Header read correctly!\n";
     slog << sout;
     F=2;
+    string d1,d2,d3,d4,d5,d6,d7,d8;
+    d1 = date[0];
+    d2 = date[1];
+    d3 = date[3];
+    d4 = date[4];
+    d5 = date[6];
+    d6 = date[7];
+    d7 = date[8];
+    d8 = date[9];
+    string month = d1+d2;
+    int m=atoi(month.c_str());
+    month = months_to_string(int_to_months(m));
+    Date_format Date;
+    Date.date = d3+d4;
+    Date.month = month;
+    Date.year = d5 + d6+ d7 + d8;
     print_output(outputfile, logfile, slog.str(),sout, F);
     stringstream ss;
-    ss << "# " << date[3] << date[4]<<' ';
-    ss << print_out_month(date);
-    ss << date[6] << date[7] << date[8] << date[9] <<' ';
+    ss << "# " << Date.date <<' '<<  Date.month << ' ' << Date.year;
     ss << time << ' ' << timezone << ' ';
     ss << magnitude << ' ' << magnitudevalue << ' ';
     ss << name << "\n";
@@ -593,20 +724,20 @@ int main(){
 
     const int MAXSIZE = 300;
     Signal Signaldata[MAXSIZE];
-    int size = 0, i=1,m=0, flag1=0,flag2=0,flag3=0,flag4=0,flag5=0;
+    int size = 0, i=1,a=0, flag1=0,flag2=0,flag3=0,flag4=0,flag5=0;
     string networkcode, stationcode, typeofband, typeofinstru, orientation;
     while (inputfile != NULL && size < MAXSIZE ){              
         inputfile >> networkcode;
-        networkcode_check(networkcode,slog,ss,i,flag1);
+        set_networkcode(networkcode,slog,ss,i,flag1);
         inputfile >> stationcode;
-        stationcode_check(stationcode,slog,ss,i,flag2);
+        set_stationcode(stationcode,slog,ss,i,flag2);
         inputfile >> typeofband;
-        typeofband_check(typeofband,slog,ss,i,flag3);
+        set_typeofband(typeofband,slog,ss,i,flag3);
         inputfile >> typeofinstru;
-        typeofinstru_check(typeofinstru,slog,ss,i,flag4);
+        set_typeofinstru(typeofinstru,slog,ss,i,flag4);
         inputfile >> orientation;
         int n = orientation.size(), j=0;
-        orientation_check(orientation,slog,ss,i,flag5);
+        set_orientation(orientation,slog,ss,i,flag5);
 
         if(flag1==0 && flag2==0 && flag3==0 && flag4==0 && flag5==0){
             while (j<n){
@@ -622,7 +753,7 @@ int main(){
             }
         }
         if(flag1!=0 || flag2!=0 || flag3!=0 || flag4!=0 || flag5!=0)
-            m++;    
+            a++;    
         i++;
     }
     int k=i;
