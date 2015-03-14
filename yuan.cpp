@@ -187,7 +187,7 @@ void set_date(string date, Date_format &Date, stringstream & slog){
     d8 = date[9];
     string month = d1+d2, day = d3+d4, year = d5+d6+d7+d8;
     int m = atoi(month.c_str()), d = atoi(day.c_str()), y = atoi(year.c_str());
-    // check validation of the date.
+    // Check on correcness of the date.
     if (y<0){
         sout ="Invalid year.\n";
         slog << sout;
@@ -212,7 +212,7 @@ void set_date(string date, Date_format &Date, stringstream & slog){
         print(outputfile, logfile, slog.str(), sout, F);
         exit(0);    
     }
-    if ((m == 4||m == 6||m == 9||m == 11)&&(d>3 || d<0)){
+    if ((m == 4||m == 6||m == 9||m == 11)&&(d>30 || d<0)){
         sout ="Invalid date of the month.\n";
         slog << sout;
         int F=2;
@@ -242,7 +242,7 @@ void set_date(string date, Date_format &Date, stringstream & slog){
 
     Date.date = day;
     Date.month = month;
-    Date.year = d5 + d6 + d7 + d8;
+    Date.year = year;
     return;
 }
 
@@ -273,8 +273,48 @@ void set_time(string time, stringstream & slog){
         print(outputfile, logfile, slog.str(), sout, F);
         exit(0);
     }
-
-    return;
+    // Check the corrctness of time.
+    string t1,t2,t3,t4,t5,t6,t7,t8,t9;
+    t1 = time[0];
+    t2 = time[1];
+    t3 = time[3];
+    t4 = time[4];
+    t5 = time[6];
+    t6 = time[7];
+    t7 = time[9];
+    t8 = time[10];
+    t9 = time[11];
+    string hour = t1+t2, minute = t3+t4, second = t5+t6, ms = t7+t8+t9;
+    int h = atoi(hour.c_str()), m = atoi(minute.c_str());
+    int s = atoi(second.c_str()), f = atoi(ms.c_str());
+    if(h<0||h>23){
+        sout ="Invalid hour.\n";
+        slog << sout;
+        int F=2;
+        print(outputfile, logfile, slog.str(), sout, F);
+        exit(0);      
+    }
+    if(m<0||m>59){
+        sout ="Invalid minute.\n";
+        slog << sout;
+        int F=2;
+        print(outputfile, logfile, slog.str(), sout, F);
+        exit(0);      
+    }
+    if(s<0||s>59){
+        sout ="Invalid second.\n";
+        slog << sout;
+        int F=2;
+        print(outputfile, logfile, slog.str(), sout, F);
+        exit(0);      
+    }
+    if(f<0||f>999){
+        sout ="Invalid millisecond.\n";
+        slog << sout;
+        int F=2;
+        print(outputfile, logfile, slog.str(), sout, F);
+        exit(0);      
+    }    return;
 }
 
 void set_timezone(string timezone, stringstream &slog){
