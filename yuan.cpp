@@ -8,7 +8,7 @@
 *
 *If the header read correctly, the maximum number of valid signals should be 300.
 *
-* Github 
+* Github https://github.com/YuanZhou2015/HW6
 * by Yuan Zhou
 * March 12 2015
 */
@@ -151,7 +151,7 @@ struct Date_format{
     string year;
 };
 
-void set_date(string date, stringstream & slog){
+void set_date(string date, Date_format &Date, stringstream & slog){
     string sout;
     ofstream outputfile, logfile;
     if (date.size()!=10){
@@ -188,44 +188,11 @@ void set_date(string date, stringstream & slog){
     string month = d1+d2;
     int m=atoi(month.c_str());
     month = months_to_string(int_to_months(m));
-    Date_format Date;
     Date.date = d3+d4;
     Date.month = month;
-    Date.year = d5 + d6+ d7 + d8;
+    Date.year = d5 + d6 + d7 + d8;
     return;
 }
-
-/*string print_out_month(string date){
-    string d1,d2;
-    d1 = date[0];
-    d2 = date[1];
-    string month = d1+d2;
-    int Q=atoi(month.c_str());
-    if ((date[0]==48) && (date[1]==49))
-        return "January ";
-    if ((date[0]==48) && (date[1]==50))
-        return "February ";
-    if ((date[0]==48) && (date[1]==51))
-        return "March ";
-    if ((date[0]==48) && (date[1]==52))
-        return "April ";
-    if ((date[0]==48) && (date[1]==53))
-        return "May ";
-    if ((date[0]==48) && (date[1]==54))
-        return "June ";
-    if ((date[0]==48) && (date[1]==55))
-        return "July ";
-    if ((date[0]==48) && (date[1]==56))
-        return "August ";
-    if ((date[0]==48) && (date[1]==57))
-        return "September ";
-    if ((date[0]==49) && (date[1]==48))
-        return "Ocotobor ";
-    if ((date[0]==49) && (date[1]==49))
-        return "November ";
-    if ((date[0]==49) && (date[1]==50))
-        return "December ";
-}*/
 
 void set_time(string time, stringstream & slog){
     string sout;
@@ -436,6 +403,12 @@ void set_stationcode(string stationcode,stringstream &slog,
     return;
 }
 
+enum Band_type{
+    L,
+    B,
+    H
+};
+
 bool is_valid_typeofband (string s) {
     string ss = uppercase(s);
     return((ss=="LONG-PERIOD")||(ss=="SHORT-PERIOD")||(ss=="BROADBAND"));
@@ -592,7 +565,7 @@ void set_orientation(string orientation,stringstream &slog,
     }
 }
 
-struct earthquake{
+struct Earthquake{
     string ID;
     Date_format date;
     string time;
@@ -600,10 +573,10 @@ struct earthquake{
     string earthquake_name;
     string epicenter;
     magnitude_type magnitudetype;
-    string magnitude;    
+    float magnitude;    
 };
 
-struct Signal {
+struct Station {
     string NT;
     string STN;
     string B;
@@ -615,7 +588,7 @@ int main(){
     ifstream inputfile;
     ofstream logfile, outputfile;
     string inputfilename, logfilename, outputfilename;
-    string sout, EventID, date, time, timezone,information;
+    string sout, date, information;
     stringstream slog;
 
     int flag=0,F;
@@ -645,27 +618,29 @@ int main(){
     return 0;
    
     //Reading the header
-
-    inputfile >> EventID;
+    Earthquake eqinfor;
+    inputfile >> eqinfor.ID;
     inputfile >> date;
-    set_date(date,slog);  
-    inputfile >> time;
-    set_time(time,slog);
-    inputfile >> timezone;
-    set_timezone(timezone,slog);
-    string name;
-    getline(inputfile,name);
-    getline(inputfile,name);
+    Date_format Date;
+    set_date(date,Date,slog);
+    inputfile >> eqinfor.time;
+    set_time(eqinfor.time,slog);
+    inputfile >> eqinfor.timezone;
+    set_timezone(eqinfor.timezone,slog);
+    //string name;
+    getline(inputfile,eqinfor.earthquake_name);
+    getline(inputfile,eqinfor.earthquake_name);
     double longitude, latitude,depth;
     inputfile >> longitude >> latitude >> depth;
     stringstream epicenter;
-    epicenter << "(" << longitude << ", " << latitude << ", " << depth << ")";
+    epicenter << "(" << longitude << ", " << latitude << ", " << depth << ")\n";
     string magnitude;
     inputfile >> magnitude;
     set_magnitude(magnitude, slog);
-    float magnitudevalue;
-    inputfile >> magnitudevalue;
-    if (magnitudevalue<0){
+    eqinfor.magnitudetype = string_to_magnitude_type(magnitude);
+    //float magnitudevalue;
+    inputfile >> eqinfor.magnitude;
+    if (eqinfor.magnitude<0){
         sout =  "invalid magnitude value.\n";
         slog << sout;
         F=2;
@@ -673,15 +648,7 @@ int main(){
         flag = 1;
         return 0;
     }
-    earthquake earthquakeinfor;
-    earthquakeinfor.ID = EventID;
-   // earthquakeinfor.date = date;
-    earthquakeinfor.time = time;
-    earthquakeinfor.timezone = timezone;
-    earthquakeinfor.earthquake_name = name;
-    earthquakeinfor.epicenter = epicenter.str();
-    earthquakeinfor.magnitudetype = string_to_magnitude_type(magnitude);
-  //  earthquakeinfor.magnitude = magnitudevalue;
+    eqinfor.epicenter = epicenter.str();
 
     // If the header read successfully, then open the output file.
     // Print the header information into output file.
@@ -692,30 +659,14 @@ int main(){
     sout = "Header read correctly!\n";
     slog << sout;
     F=2;
-    string d1,d2,d3,d4,d5,d6,d7,d8;
-    d1 = date[0];
-    d2 = date[1];
-    d3 = date[3];
-    d4 = date[4];
-    d5 = date[6];
-    d6 = date[7];
-    d7 = date[8];
-    d8 = date[9];
-    string month = d1+d2;
-    int m=atoi(month.c_str());
-    month = months_to_string(int_to_months(m));
-    Date_format Date;
-    Date.date = d3+d4;
-    Date.month = month;
-    Date.year = d5 + d6+ d7 + d8;
     print_output(outputfile, logfile, slog.str(),sout, F);
     stringstream ss;
-    ss << "# " << Date.date <<' '<<  Date.month << ' ' << Date.year;
-    ss << time << ' ' << timezone << ' ';
-    ss << magnitude << ' ' << magnitudevalue << ' ';
-    ss << name << "\n";
-    ss << "[" << EventID <<"] ";
-    ss << "(" << longitude << ", " << latitude << ", " << depth << ")\n";
+    ss << "# " << Date.date <<' '<<  Date.month << ' ' << Date.year <<' ';
+    ss << eqinfor.time << ' ' << eqinfor.timezone << ' ';
+    ss << eqinfor.magnitudetype << ' ' << eqinfor.magnitude << ' ';
+    ss << eqinfor.earthquake_name << "\n";
+    ss << "[" << eqinfor.ID <<"] ";
+    ss << eqinfor.epicenter;
     F=1;
     print_output(outputfile, logfile,ss.str(),sout, F);
 
@@ -723,11 +674,13 @@ int main(){
     // The number of valid information will not more than 300.
 
     const int MAXSIZE = 300;
-    Signal Signaldata[MAXSIZE];
-    int size = 0, i=1,a=0, flag1=0,flag2=0,flag3=0,flag4=0,flag5=0;
+    Station Signaldata[MAXSIZE];
+    int size = 0, i = 1,a = 0, flag1 = 0,flag2 = 0,flag3 = 0,flag4 = 0,flag5 = 0;
     string networkcode, stationcode, typeofband, typeofinstru, orientation;
-    while (inputfile != NULL && size < MAXSIZE ){              
+    for(i;inputfile != NULL && size < MAXSIZE; i++){        
         inputfile >> networkcode;
+        if(inputfile == NULL)
+            break;
         set_networkcode(networkcode,slog,ss,i,flag1);
         inputfile >> stationcode;
         set_stationcode(stationcode,slog,ss,i,flag2);
@@ -738,7 +691,6 @@ int main(){
         inputfile >> orientation;
         int n = orientation.size(), j=0;
         set_orientation(orientation,slog,ss,i,flag5);
-
         if(flag1==0 && flag2==0 && flag3==0 && flag4==0 && flag5==0){
             while (j<n){
                 Signaldata[size].NT = networkcode;
@@ -754,23 +706,21 @@ int main(){
         }
         if(flag1!=0 || flag2!=0 || flag3!=0 || flag4!=0 || flag5!=0)
             a++;    
-        i++;
     }
-    int k=i;
-    
+
     // Generat the report for total information read.
 
     F=2;
     sout ="\nTotal invalid entries igored: ";
     slog << sout;
     print_output(outputfile, logfile,slog.str(),sout,F); 
-    sout =itos(m);
+    sout =itos(a);
     slog << sout; 
     print_output(outputfile, logfile,slog.str(),sout,F); 
     sout ="\nTotal valid entries read: ";
     slog << sout;
     print_output(outputfile, logfile,slog.str(),sout,F);
-    sout =itos(k-m-1);
+    sout =itos(i-a-1);
     slog << sout; 
     print_output(outputfile, logfile,slog.str(),sout,F);
     sout ="\nSignal names produced: ";
