@@ -497,34 +497,29 @@ void set_stationcode(string stationcode,stringstream &slog,
 }
 
 enum Band_type{
-    L,
-    B,
-    H
+    LONGPERIOD,
+    SHORTPERIOD,
+    BROADBAND
 };
-
 bool is_valid_typeofband (string s){
     string ss = uppercase(s);
     return((ss=="LONG-PERIOD")||(ss=="SHORT-PERIOD")||(ss=="BROADBAND"));
 }
-
-
 Band_type string_to_bandtype (string s){
     string ss = uppercase(s);
-    if (ss == "LONG-PERIOD") return L;
-    if (ss == "SHORT-PERIOD") return B;
-    if (ss == "BROADBAND") return H;
+    if (ss == "LONG-PERIOD") return LONGPERIOD;
+    if (ss == "SHORT-PERIOD") return SHORTPERIOD;
+    if (ss == "BROADBAND") return BROADBAND;
     exit(EXIT_FAILURE);
-}
-
+}   
 string bandtype_to_string (Band_type b){
     switch(b){
-        case L: return "L";
-        case B: return "B";
-        case H: return "H";
+        case LONGPERIOD: return "L";
+        case SHORTPERIOD: return "B";
+        case BROADBAND: return "H";
     }
     exit(EXIT_FAILURE);
 }
-
 void set_typeofband(string &typeofband,stringstream &slog,
                       stringstream &ss, int &i, int flag){
     string sout;
@@ -549,12 +544,31 @@ void set_typeofband(string &typeofband,stringstream &slog,
     if (flag==0){
         typeofband = bandtype_to_string(string_to_bandtype(typeofband));
     }
-
 }
 
+enum Instrument_type{
+    HIGHGAIN,
+    LOWGAIN,
+    ACCELEROMETER
+};
 bool is_valid_typeofinstru (string s) {
     string ss = uppercase(s);
     return((ss=="HIGH-GAIN")||(ss=="LOW-GAIN")||(ss=="ACCELEROMETER"));
+}
+Instrument_type string_to_instrutype (string s){
+    string ss = uppercase(s);
+    if (ss == "HIGH-GAIN") return HIGHGAIN;
+    if (ss == "LOW-GAIN") return LOWGAIN;
+    if (ss == "ACCELEROMETER") return ACCELEROMETER;
+    exit(EXIT_FAILURE);
+}   
+string instrutype_to_string (Instrument_type instr){
+    switch(instr){
+        case HIGHGAIN: return "H";
+        case LOWGAIN: return "L";
+        case ACCELEROMETER: return "N";
+    }
+    exit(EXIT_FAILURE);
 }
 void set_typeofinstru(string &typeofinstru,stringstream &slog, 
                         stringstream &ss, int&i, int &flag){
@@ -578,15 +592,7 @@ void set_typeofinstru(string &typeofinstru,stringstream &slog,
         flag=1;    
     }
     if (flag==0){
-        if (uppercase(typeofinstru)=="HIGH-GAIN"){
-            typeofinstru = "H";
-        }
-        if (uppercase(typeofinstru)=="LOW-GAIN"){
-            typeofinstru = "L";
-        }
-        if (uppercase(typeofinstru)=="ACCELEROMETER"){
-            typeofinstru = "N";
-        }
+        typeofinstru = instrutype_to_string(string_to_instrutype(typeofinstru));
     }
 }
 
