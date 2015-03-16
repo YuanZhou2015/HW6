@@ -395,6 +395,25 @@ bool is_valid_network_code(string s){
     return ((s=="CE")||(s=="CI")||(s=="FA")||(s=="NP")||(s=="WR"));
 }
 
+Network_code string_to_NTcode (string s){
+    if (s == "CE") return CE;
+    if (s == "CI") return CI;
+    if (s == "FA") return FA;
+    if (s == "NP") return NP;
+    if (s == "WR") return WR;
+    exit(EXIT_FAILURE);
+}   
+string NTcode_to_string (Network_code nt){
+    switch(nt){
+        case CE: return "CE";
+        case CI: return "CI";
+        case FA: return "FA";
+        case NP: return "NP";
+        case WR: return "WR";
+    }
+    exit(EXIT_FAILURE);
+}
+
 void set_networkcode(string networkcode, stringstream &slog, 
                        stringstream &ss, int &i, int &flag){
     string sout;
@@ -541,9 +560,10 @@ void set_typeofband(string &typeofband,stringstream &slog,
         print(outputfile, logfile, slog.str(), sout, F);
         flag=1;    
     }
-    if (flag==0){
+/*    if (flag==0){
         typeofband = bandtype_to_string(string_to_bandtype(typeofband));
-    }
+    }       */
+    return;
 }
 
 enum Instrument_type{
@@ -591,9 +611,10 @@ void set_typeofinstru(string &typeofinstru,stringstream &slog,
         print(outputfile, logfile, slog.str(), sout, F);
         flag=1;    
     }
-    if (flag==0){
+/*    if (flag==0){
         typeofinstru = instrutype_to_string(string_to_instrutype(typeofinstru));
-    }
+    }   */
+    return;
 }
 
 void set_orientation(string orientation,stringstream &slog,
@@ -685,14 +706,25 @@ struct Earthquake{
     magnitude_type magnitudetype;
     float magnitude;    
 };
-
+    /*
 struct Station {
     string NT;
     string STN;
-    string B;
-    string I;
+    Band_type B;
+    Instrument_type I;
+    string O;
+} SignalData[300];
+      */
+   
+struct Station {
+    Network_code NT;
+    string STN;
+    Band_type B;
+    Instrument_type I;
     string O;
 };
+    
+
 
 int main(){
     ifstream inputfile;
@@ -803,10 +835,10 @@ int main(){
         set_orientation(orientation,slog,ss,i,flag5);
         if(flag1==0 && flag2==0 && flag3==0 && flag4==0 && flag5==0){
             while (j<n){
-                Signaldata[size].NT = networkcode;
+                Signaldata[size].NT = string_to_NTcode(networkcode);
                 Signaldata[size].STN = stationcode;
-                Signaldata[size].B = typeofband;
-                Signaldata[size].I = typeofinstru;
+                Signaldata[size].B = string_to_bandtype(typeofband);
+                Signaldata[size].I = string_to_instrutype(typeofinstru);
                 Signaldata[size].O = orientation[j];
                 size++;
                 j++;
@@ -844,8 +876,8 @@ int main(){
     ss << itos(size) <<"\n";
     print(outputfile, logfile,ss.str(),sout,F);     
     for (int j=0; j< size; j++){
-        ss << eqinfor.ID << "." << Signaldata[j].NT << "." << Signaldata[j].STN << "." 
-           << Signaldata[j].B << Signaldata[j].I << Signaldata[j].O <<"\n"; 
+        ss << eqinfor.ID << "." << NTcode_to_string(Signaldata[j].NT) << "." << Signaldata[j].STN << "." 
+           << bandtype_to_string(Signaldata[j].B) << instrutype_to_string(Signaldata[j].I) << Signaldata[j].O <<"\n"; 
     }
     F=1;
     print(outputfile, logfile,ss.str(),sout,F); 
