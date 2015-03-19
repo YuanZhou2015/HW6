@@ -374,7 +374,7 @@ void set_magnitude(string magnitude, stringstream &slog){
 }
 
 magnitude_type string_to_magnitude_type (string s){
-    string ss = uppercase (s);
+    string ss = uppercase(s);
     if (ss == "ML") return ML;
     if (ss == "MS") return MS;
     if (ss == "MB") return MB;
@@ -760,7 +760,7 @@ int main(){
     set_timezone(eqinfor.timezone,slog);
     getline(inputfile,eqinfor.earthquake_name);
     getline(inputfile,eqinfor.earthquake_name);
-    double longitude, latitude,depth;
+    double longitude,latitude,depth;
     inputfile >> longitude >> latitude >> depth;
     stringstream epicenter;
     epicenter << "(" << longitude << ", " << latitude << ", " << depth << ")\n";
@@ -770,7 +770,7 @@ int main(){
     eqinfor.magnitudetype = string_to_magnitude_type(magnitude);
     inputfile >> eqinfor.magnitude;
     if (eqinfor.magnitude<0){
-        sout =  "invalid magnitude value.\n";
+        sout =  "Invalid magnitude value.\n";
         slog << sout;
         F = 2;
         print(outputfile,logfile,slog.str(),sout,F);
@@ -788,7 +788,7 @@ int main(){
     sout = "Header read correctly!\n";
     slog << sout;
     F = 2;
-    print(outputfile,logfile,slog.str(),sout, F);
+    print(outputfile,logfile,slog.str(),sout,F);
     stringstream ss;
     ss << "# " << Date.date <<' '<< Date.month << ' ' << Date.year <<' ';
     ss << eqinfor.time << ' ' << eqinfor.timezone << ' ';
@@ -806,7 +806,7 @@ int main(){
     Station Signaldata[MAXSIZE];
     int size = 0, i, a = 0, flag1 = 0,flag2 = 0,flag3 = 0,flag4 = 0,flag5 = 0;
     string networkcode, stationcode, typeofband, typeofinstru, orientation;
-    for(i = 1;inputfile != NULL && size < MAXSIZE; i++){        
+    for(i = 1;inputfile != NULL && size<MAXSIZE; i++){        
         inputfile >> networkcode;
         if(inputfile == NULL)
             break;
@@ -818,7 +818,7 @@ int main(){
         inputfile >> typeofinstru;
         set_typeofinstru(typeofinstru,slog,ss,i,flag4);
         inputfile >> orientation;
-        int n = orientation.size(), j=0;
+        int n = orientation.size(), j = 0;
         set_orientation(orientation,slog,ss,i,flag5);
         if(flag1 == 0 && flag2 == 0 && flag3 == 0 && flag4 == 0 && flag5 == 0){
             while (j<n){
