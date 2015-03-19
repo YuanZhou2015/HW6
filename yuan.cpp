@@ -12,6 +12,7 @@
 * by Yuan Zhou
 * March 12 2015
 */
+
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -23,13 +24,13 @@
 using namespace std;
 
 void print(ofstream &outputfile, ofstream &logfile,
-                  string str,string termina, int &F){    
-    if (F==1){
+           string str,string termina, int &F){
+    if (F == 1){
         outputfile.open("yuan.out");
         outputfile << str;
         outputfile.close();
     }
-    if (F==2){
+    if (F == 2){
         logfile.open("yuan.log");
         cout << termina;
         logfile << str;
@@ -37,12 +38,11 @@ void print(ofstream &outputfile, ofstream &logfile,
     }        
 }
 
-void open_log( string logfilename, ofstream &logfile){
-    //stringstream ss;
+void open_log(string logfilename, ofstream &logfile){
     string information;
     ofstream outputfile;
     logfile.open(logfilename.c_str());
-    if (!logfile.is_open() ){
+    if (!logfile.is_open()){
         cout<< "Cannot open log file: "
             << logfilename
             << endl;
@@ -50,46 +50,42 @@ void open_log( string logfilename, ofstream &logfile){
     }
 }
 
-void open_input(string inputfilename,ifstream &inputfile,stringstream &slog, int &flag){
-
+void open_input(string inputfilename, ifstream &inputfile, stringstream &slog, int &flag){
     ofstream outputfile, logfile;
     string  sout;
-
     inputfile.open(inputfilename.c_str());
     if (!inputfile.is_open()){
-        sout ="\nCannot open input file: ";
+        sout = "\nCannot open input file: ";
         slog << sout;
-        int F=2;
+        int F = 2;
         print(outputfile, logfile, slog.str(), sout, F);
         sout = inputfilename;
         slog << sout;
-        F=2;
+        F = 2;
         print(outputfile, logfile, slog.str(), sout, F);
-        sout ="\n";
+        sout = "\n";
         slog << sout;
-        F=2;
+        F = 2;
         print(outputfile, logfile, slog.str(), sout, F);
         flag = 1;
         exit(0);
     } 
-
     return;
 }
 
-void open_output( string outputfilename, ofstream &outputfile, stringstream &slog){
+void open_output(string outputfilename, ofstream &outputfile, stringstream &slog){
     ofstream logfile;
     string sout;
-
     outputfile.open(outputfilename.c_str());
     logfile.open("yuan.log");
     if (!outputfile.is_open() ){
-        sout ="\nCannot open output file: ";
+        sout = "\nCannot open output file: ";
         slog << sout;
-        int F=2;
+        int F = 2;
         print(outputfile, logfile, slog.str(), sout, F);
         sout = outputfilename;
         slog << sout;
-        F=2;
+        F = 2;
         print(outputfile, logfile, slog.str(), sout, F);
         exit(0);
         return;
@@ -155,25 +151,25 @@ void set_date(string date, Date_format &Date, stringstream & slog){
     string sout;
     ofstream outputfile, logfile;
     if (date.size()!=10){
-        sout ="Invalid date.(Hint: Size should be 10 as 'MM/DD/YYYY or MM-DD-YYYY')\n";
+        sout = "Invalid date.(Hint: Size should be 10 as 'MM/DD/YYYY or MM-DD-YYYY')\n";
         slog << sout;
-        int F=2;
+        int F = 2;
         print(outputfile, logfile, slog.str(), sout, F);
         exit (0);
     }
     if (!isdigit(date[0])||!isdigit(date[1])||!isdigit(date[3])||!isdigit(date[4])
         ||!isdigit(date[6])||!isdigit(date[7])||!isdigit(date[8])||!isdigit(date[9])){
-        sout ="Invalid date. (Hint: The date should be numbers.)\n";
+        sout = "Invalid date. (Hint: The date should be numbers.)\n";
         slog << sout;
-        int F=2;
+        int F = 2;
         print(outputfile, logfile, slog.str(), sout, F);
         exit(0);
     }   
     if((date[2] != '-' || date[5] != '-')&&(date[2] != '/' || date[5] != '/')){
-        sout ="Invalid fomat of date.(Hint: MM/DD/YYYY or MM-DD-YYYY)\n";
+        sout = "Invalid fomat of date.(Hint: MM/DD/YYYY or MM-DD-YYYY)\n";
         slog << sout;
-        int F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        int F = 2;
+        print(outputfile,logfile,slog.str(),sout, F);
         exit(0);
     }
     string d1,d2,d3,d4,d5,d6,d7,d8;
@@ -187,59 +183,63 @@ void set_date(string date, Date_format &Date, stringstream & slog){
     d8 = date[9];
     string month = d1+d2, day = d3+d4, year = d5+d6+d7+d8;
     int m = atoi(month.c_str()), d = atoi(day.c_str()), y = atoi(year.c_str());
+
     // Check on correcness of the date.
+
     if (y<0){
-        sout ="Invalid year.\n";
+        sout = "Invalid year.\n";
         slog << sout;
-        int F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        int F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         exit(0);
     }
     if (m<1 || m>12){
-        sout ="Invalid month.(Hint: Month should between 1 to 12.)\n";
+        sout = "Invalid month.(Hint: Month should between 1 to 12.)\n";
         slog << sout;
-        int F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        int F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         exit(0);
     }
     else{
         month = months_to_string(int_to_months(m)); 
     }
     if ((m == 1||m == 3||m == 5||m == 7||m == 8||m == 10||m == 12)&&(d>31 || d<0)){
-        sout ="Invalid date of the month.\n";
+        sout = "Invalid date of the month.\n";
         slog << sout;
-        int F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        int F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         exit(0);    
     }
     if ((m == 4||m == 6||m == 9||m == 11)&&(d>30 || d<0)){
-        sout ="Invalid date of the month.\n";
+        sout = "Invalid date of the month.\n";
         slog << sout;
-        int F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        int F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         exit(0);    
     }
+
+    // Checking about the leapyear.
+
     if (m == 2){
         if (((y%4) == 0 && (y%100))||(y%400 == 0)){
             if (d>29||d<0){
-                sout ="Invalid date of the month.\n";
+                sout = "Invalid date of the month(for Feburary in leadyear).\n";
                 slog << sout;
-                int F=2;
-                print(outputfile, logfile, slog.str(), sout, F);
+                int F = 2;
+                print(outputfile,logfile,slog.str(),sout,F);
                 exit(0);
             }
         }
         else{
             if (d>28||d<0){
-                sout ="Invalid date of the month.\n";
+                sout = "Invalid date of the month(for Feburary not in leadyear).\n";
                 slog << sout;
-                int F=2;
-                print(outputfile, logfile, slog.str(), sout, F);
+                int F = 2;
+                print(outputfile,logfile,slog.str(),sout,F);
                 exit(0);
             }
         }
     }
-
     Date.date = day;
     Date.month = month;
     Date.year = year;
@@ -252,8 +252,8 @@ void set_time(string time, stringstream & slog){
     if (time.size()!=12){
         sout = "Invalid format of time.(Hint: Size should be 12 as 'hh:mm:ss.fff')\n";
         slog << sout;
-        int F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        int F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         exit (0);
     }
     if (!isdigit(time[0])||!isdigit(time[1])
@@ -262,18 +262,20 @@ void set_time(string time, stringstream & slog){
         ||!isdigit(time[9])||!isdigit(time[10])||!isdigit(time[11])){
         sout = "Invalid time. (Hint: The time should be numbers.)\n";
         slog << sout;
-        int F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        int F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         exit(0);
     }   
     if(time[2] != ':' || time[5] != ':'||time[8] != '.' ){
         sout = "Invalid fomat of time.(Hint: hh:mm:ss.fff)\n";
         slog << sout;
-        int F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        int F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         exit(0);
     }
+
     // Check the corrctness of time.
+
     string t1,t2,t3,t4,t5,t6,t7,t8,t9;
     t1 = time[0];
     t2 = time[1];
@@ -288,33 +290,34 @@ void set_time(string time, stringstream & slog){
     int h = atoi(hour.c_str()), m = atoi(minute.c_str());
     int s = atoi(second.c_str()), f = atoi(ms.c_str());
     if(h<0||h>23){
-        sout ="Invalid hour.\n";
+        sout = "Invalid hour.\n";
         slog << sout;
-        int F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        int F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         exit(0);      
     }
     if(m<0||m>59){
-        sout ="Invalid minute.\n";
+        sout = "Invalid minute.\n";
         slog << sout;
-        int F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        int F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         exit(0);      
     }
     if(s<0||s>59){
-        sout ="Invalid second.\n";
+        sout = "Invalid second.\n";
         slog << sout;
-        int F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        int F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         exit(0);      
     }
     if(f<0||f>999){
-        sout ="Invalid millisecond.\n";
+        sout = "Invalid millisecond.\n";
         slog << sout;
-        int F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        int F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         exit(0);      
-    }    return;
+    }
+    return;
 }
 
 void set_timezone(string timezone, stringstream &slog){
@@ -323,15 +326,15 @@ void set_timezone(string timezone, stringstream &slog){
     if (timezone.size()!=3){
         sout = "Invalid format of timezone.(Hint: Size should be 3.)\n";
         slog << sout;
-        int F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        int F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         exit (0);
     }
     if (!isalpha(timezone[0])||!isalpha(timezone[1])||!isalpha(timezone[2])){
         sout = "Invalid format of timezone. (Hint: The timezone should be 3 chars)\n";
         slog << sout;
-        int F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        int F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         exit(0);
     }
     return;
@@ -343,17 +346,19 @@ enum magnitude_type{
     MB, 
     MW 
 };
-// useful function to convert a string to uppercase 
+
+// Useful function to convert a string to uppercase 
+
 string uppercase (string &s){
     string result = s;
-    for (int i=0; i<(int)result.size(); i++)
+    for (int i = 0; i<(int)result.size(); i++)
         result[i] = toupper(result[i]);
     return result;
 }
 
 bool is_valid_magnitude (string s) {
     string ss = uppercase(s);
-    return((ss=="ML")||(ss=="MS")||(ss=="MB")||(ss=="MW"));
+    return((ss == "ML")||(ss == "MS")||(ss == "MB")||(ss == "MW"));
 }
 
 void set_magnitude(string magnitude, stringstream &slog){
@@ -362,8 +367,8 @@ void set_magnitude(string magnitude, stringstream &slog){
     if(!is_valid_magnitude (magnitude)){
         sout = "Invalid magnitude.\n";
         slog << sout;
-        int F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        int F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         exit (0);
     }
 }
@@ -377,7 +382,7 @@ magnitude_type string_to_magnitude_type (string s){
     exit (EXIT_FAILURE);
 }
 
-string itos(int i) {
+string itos(int i){
     stringstream s;
     s << i;
     return s.str();
@@ -392,10 +397,10 @@ enum Network_code{
 };
 
 bool is_valid_network_code(string s){
-    return ((s=="CE")||(s=="CI")||(s=="FA")||(s=="NP")||(s=="WR"));
+    return ((s == "CE")||(s == "CI")||(s == "FA")||(s == "NP")||(s == "WR"));
 }
 
-Network_code string_to_NTcode (string s){
+Network_code string_to_NTcode(string s){
     if (s == "CE") return CE;
     if (s == "CI") return CI;
     if (s == "FA") return FA;
@@ -403,7 +408,7 @@ Network_code string_to_NTcode (string s){
     if (s == "WR") return WR;
     exit(EXIT_FAILURE);
 }   
-string NTcode_to_string (Network_code nt){
+string NTcode_to_string(Network_code nt){
     switch(nt){
         case CE: return "CE";
         case CI: return "CI";
@@ -415,101 +420,101 @@ string NTcode_to_string (Network_code nt){
 }
 
 void set_networkcode(string networkcode, stringstream &slog, 
-                       stringstream &ss, int &i, int &flag){
+                     stringstream &ss, int &i, int &flag){
     string sout;
     ofstream outputfile, logfile;
     int F;
     flag = 0;
-    if (networkcode.size()!=2){
+    if (networkcode.size() != 2){
         sout = "Entry # ";
         slog << sout;
-        F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         sout = itos(i);
         slog << sout;
-        F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         sout = " ignored. Invalid network. \n";
         slog << sout;
-        F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
-        flag=1;
+        F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
+        flag = 1;
     }
 
     if (!is_valid_network_code(networkcode)){
         sout = "Entry # ";
         slog << sout;
-        F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
-        sout =itos (i);
+        F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
+        sout = itos(i);
         slog << sout;
-        F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         sout = " ignored. Invalid network. \n";
         slog << sout;
-        F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
-        flag=1;
+        F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
+        flag = 1;
     }
     return;
 }
 
 void set_stationcode(string stationcode,stringstream &slog,
-                       stringstream &ss, int &i, int &flag){
+                     stringstream &ss, int &i, int &flag){
     string sout;
     ofstream outputfile, logfile;
     int F;
-    flag=0;
-    if (stationcode.size()!=3 && stationcode.size()!=5){
+    flag = 0;
+    if (stationcode.size() != 3 && stationcode.size() != 5){
         sout = "Entry # ";
         slog << sout;
-        F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         sout = itos(i);
         slog << sout;
-        F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         sout = " ignored. Invalid station code. \n";
         slog << sout;
-        F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         flag=1;
     }
 
-    if (stationcode.size()==3){
+    if (stationcode.size() == 3){
         if (!isupper(stationcode[0])||!isupper(stationcode[1])||!isupper(stationcode[2])){
             sout = "Entry # ";
             slog << sout;
-            F=2;
-            print(outputfile, logfile, slog.str(), sout, F);
+            F = 2;
+            print(outputfile,logfile,slog.str(),sout,F);
             sout =itos (i);
             slog << sout;
-            F=2;
-            print(outputfile, logfile, slog.str(), sout, F);
+            F = 2;
+            print(outputfile,logfile,slog.str(),sout,F);
             sout = " ignored. Invalid station code. \n";
             slog << sout;
-            F=2;
-            print(outputfile, logfile, slog.str(), sout, F);
-            flag=1;
+            F = 2;
+            print(outputfile,logfile,slog.str(),sout,F);
+            flag = 1;
         }
     }
 
-    if (stationcode.size()==5){
+    if (stationcode.size() == 5){
         if (!isdigit(stationcode[0])||!isdigit(stationcode[1])||!isdigit(stationcode[2])
             ||!isdigit(stationcode[3])||!isdigit(stationcode[4])){
             sout = "Entry # ";
             slog << sout;
-            F=2;
-            print(outputfile, logfile, slog.str(), sout, F);
-            sout =itos (i);
+            F = 2;
+            print(outputfile,logfile,slog.str(),sout,F);
+            sout = itos (i);
             slog << sout;
-            F=2;
-            print(outputfile, logfile, slog.str(), sout, F);
+            F = 2;
+            print(outputfile,logfile,slog.str(),sout,F);
             sout = " ignored. Invalid station code. \n";
             slog << sout;
-            F=2;
-            print(outputfile, logfile, slog.str(), sout, F);
-            flag=1;
+            F = 2;
+            print(outputfile,logfile,slog.str(),sout,F);
+            flag = 1;
         }
     }
     return;
@@ -522,7 +527,7 @@ enum Band_type{
 };
 bool is_valid_typeofband (string s){
     string ss = uppercase(s);
-    return((ss=="LONG-PERIOD")||(ss=="SHORT-PERIOD")||(ss=="BROADBAND"));
+    return((ss == "LONG-PERIOD")||(ss == "SHORT-PERIOD")||(ss == "BROADBAND"));
 }
 Band_type string_to_bandtype (string s){
     string ss = uppercase(s);
@@ -540,29 +545,26 @@ string bandtype_to_string (Band_type b){
     exit(EXIT_FAILURE);
 }
 void set_typeofband(string &typeofband,stringstream &slog,
-                      stringstream &ss, int &i, int flag){
+                    stringstream &ss, int &i, int flag){
     string sout;
     ofstream outputfile, logfile;
     int F;
-    flag=0;
+    flag = 0;
     if (!is_valid_typeofband(typeofband)){
         sout = "Entry # ";
         slog << sout;
-        F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
-        sout =itos (i);
+        F = 2;
+        print(outputfile, logfile,slog.str(),sout,F);
+        sout = itos (i);
         slog << sout;
-        F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         sout = " ignored. Invalid band type. \n";
         slog << sout;
-        F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
-        flag=1;    
+        F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
+        flag = 1;    
     }
-/*    if (flag==0){
-        typeofband = bandtype_to_string(string_to_bandtype(typeofband));
-    }       */
     return;
 }
 
@@ -573,7 +575,7 @@ enum Instrument_type{
 };
 bool is_valid_typeofinstru (string s) {
     string ss = uppercase(s);
-    return((ss=="HIGH-GAIN")||(ss=="LOW-GAIN")||(ss=="ACCELEROMETER"));
+    return((ss == "HIGH-GAIN")||(ss == "LOW-GAIN")||(ss == "ACCELEROMETER"));
 }
 Instrument_type string_to_instrutype (string s){
     string ss = uppercase(s);
@@ -591,56 +593,53 @@ string instrutype_to_string (Instrument_type instr){
     exit(EXIT_FAILURE);
 }
 void set_typeofinstru(string &typeofinstru,stringstream &slog, 
-                        stringstream &ss, int&i, int &flag){
+                      stringstream &ss, int&i, int &flag){
     string sout;
     ofstream outputfile, logfile;
     int F;
-    flag=0;
+    flag = 0;
     if (!is_valid_typeofinstru(typeofinstru)){
         sout = "Entry # ";
         slog << sout;
-        F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
-        sout =itos (i);
+        F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
+        sout = itos (i);
         slog << sout;
-        F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         sout = " ignored. Invalid type of instrument. \n";
         slog << sout;
-        F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
-        flag=1;    
+        F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
+        flag = 1;    
     }
-/*    if (flag==0){
-        typeofinstru = instrutype_to_string(string_to_instrutype(typeofinstru));
-    }   */
     return;
 }
 
 void set_orientation(string orientation,stringstream &slog,
-                       stringstream &ss, int &i, int &flag){
+                     stringstream &ss, int &i, int &flag){
     string sout;
     ofstream outputfile, logfile;
     int F,n,j;
-    flag=0;
+    flag = 0;
     if (orientation.size()>3||orientation.size()<1){
         sout = "Entry # ";
         slog << sout;
-        F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         sout = itos(i);
         slog << sout;
-        F=2;
-        print(outputfile, logfile, slog.str(), sout, F);
+        F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         sout = " ignored. Invalid orientation. \n";
         slog << sout;
-        F=2;
+        F = 2;
         print(outputfile, logfile, slog.str(), sout, F);
-        flag=1;
+        flag = 1;
     }
     else{
         j=0;
-        n=orientation.size();
+        n = orientation.size();
         orientation = uppercase (orientation);
         while(j<n){
             if(isdigit(orientation[j]))
@@ -653,45 +652,45 @@ void set_orientation(string orientation,stringstream &slog,
                     else{
                         sout = "Entry # ";
                         slog << sout;
-                        F=2;
-                        print(outputfile, logfile, slog.str(), sout, F);
+                        F = 2;
+                        print(outputfile,logfile,slog.str(),sout,F);
                         sout = itos(i);
                         slog << sout;
-                        F=2;
-                        print(outputfile, logfile, slog.str(), sout, F);
+                        F = 2;
+                        print(outputfile,logfile,slog.str(),sout,F);
                         sout = " ignored. Invalid orientation. \n";
                         slog << sout;
-                        F=2;
-                        print(outputfile, logfile, slog.str(), sout, F);
-                        flag=1;
+                        F = 2;
+                        print(outputfile,logfile,slog.str(),sout,F);
+                        flag = 1;
                         j++;
                     }
                 }
-                if(flag==1) break;
+                if(flag == 1) break;
             }
         }
-        j=0;
+        j = 0;
         while(j<n){
             if ((orientation[j]!= '1' && orientation[j]!='2' && orientation[j]!= '3')
                 &&(orientation[j]!='N' && orientation[j]!='E' && orientation[j]!= 'Z')){
                  sout = "Entry # ";
                         slog << sout;
-                        F=2;
-                        print(outputfile, logfile, slog.str(), sout, F);
+                        F = 2;
+                        print(outputfile,logfile,slog.str(),sout,F);
                         sout = itos(i);
                         slog << sout;
-                        F=2;
-                        print(outputfile, logfile, slog.str(), sout, F);
+                        F = 2;
+                        print(outputfile,logfile,slog.str(),sout,F);
                         sout = " ignored. Invalid orientation. \n";
                         slog << sout;
-                        F=2;
-                        print(outputfile, logfile, slog.str(), sout, F);
-                        flag=1;
+                        F = 2;
+                        print(outputfile,logfile,slog.str(),sout,F);
+                        flag = 1;
                         j++;
             }
             else
                 j++;
-            if (flag==1)break;
+            if (flag == 1)break;
         }
     }
 }
@@ -706,16 +705,7 @@ struct Earthquake{
     magnitude_type magnitudetype;
     float magnitude;    
 };
-    /*
-struct Station {
-    string NT;
-    string STN;
-    Band_type B;
-    Instrument_type I;
-    string O;
-} SignalData[300];
-      */
-   
+
 struct Station {
     Network_code NT;
     string STN;
@@ -723,8 +713,6 @@ struct Station {
     Instrument_type I;
     string O;
 };
-    
-
 
 int main(){
     ifstream inputfile;
@@ -737,29 +725,30 @@ int main(){
     open_log("yuan.log",logfile);
     logfile.close();
     sout = "> Enter input file name: ";
-    F=2;
-    print(outputfile, logfile,slog.str(), sout, F);
+    F = 2;
+    print(outputfile,logfile,slog.str(),sout,F);
     cin >> inputfilename;
     if (flag ==1)
     return 0;
     sout = "Opening file: ";
     slog << sout;
-    F=2;
-    print(outputfile, logfile, slog.str(), sout, F);
+    F = 2;
+    print(outputfile,logfile,slog.str(),sout,F);
     sout =inputfilename;
     slog << sout;
-    F=2;
-    print(outputfile, logfile, slog.str(),sout, F);
-    open_input(inputfilename,inputfile, slog, flag);
+    F = 2;
+    print(outputfile,logfile,slog.str(),sout,F);
+    open_input(inputfilename,inputfile,slog,flag);
     sout = "\nProcessing input...\n";
     slog << sout;
-    F=2;
-    print(outputfile, logfile, slog.str(),sout, F);
+    F = 2;
+    print(outputfile,logfile,slog.str(),sout,F);
     logfile.close();
-    if (flag ==1)
+    if (flag == 1)
     return 0;
    
     //Reading the header
+
     Earthquake eqinfor;
     inputfile >> eqinfor.ID;
     inputfile >> date;
@@ -769,7 +758,6 @@ int main(){
     set_time(eqinfor.time,slog);
     inputfile >> eqinfor.timezone;
     set_timezone(eqinfor.timezone,slog);
-    //string name;
     getline(inputfile,eqinfor.earthquake_name);
     getline(inputfile,eqinfor.earthquake_name);
     double longitude, latitude,depth;
@@ -778,15 +766,14 @@ int main(){
     epicenter << "(" << longitude << ", " << latitude << ", " << depth << ")\n";
     string magnitude;
     inputfile >> magnitude;
-    set_magnitude(magnitude, slog);
+    set_magnitude(magnitude,slog);
     eqinfor.magnitudetype = string_to_magnitude_type(magnitude);
-    //float magnitudevalue;
     inputfile >> eqinfor.magnitude;
     if (eqinfor.magnitude<0){
         sout =  "invalid magnitude value.\n";
         slog << sout;
-        F=2;
-        print(outputfile, logfile, slog.str(),sout,F);
+        F = 2;
+        print(outputfile,logfile,slog.str(),sout,F);
         flag = 1;
         return 0;
     }
@@ -800,17 +787,17 @@ int main(){
     outputfile.close();
     sout = "Header read correctly!\n";
     slog << sout;
-    F=2;
-    print(outputfile, logfile, slog.str(),sout, F);
+    F = 2;
+    print(outputfile,logfile,slog.str(),sout, F);
     stringstream ss;
-    ss << "# " << Date.date <<' '<<  Date.month << ' ' << Date.year <<' ';
+    ss << "# " << Date.date <<' '<< Date.month << ' ' << Date.year <<' ';
     ss << eqinfor.time << ' ' << eqinfor.timezone << ' ';
     ss << eqinfor.magnitudetype << ' ' << eqinfor.magnitude << ' ';
     ss << eqinfor.earthquake_name << "\n";
     ss << "[" << eqinfor.ID <<"] ";
     ss << eqinfor.epicenter;
-    F=1;
-    print(outputfile, logfile,ss.str(),sout, F);
+    F = 1;
+    print(outputfile,logfile,ss.str(),sout,F);
 
     // Reading the table of earthquake information. 
     // The number of valid information will not more than 300.
@@ -833,7 +820,7 @@ int main(){
         inputfile >> orientation;
         int n = orientation.size(), j=0;
         set_orientation(orientation,slog,ss,i,flag5);
-        if(flag1==0 && flag2==0 && flag3==0 && flag4==0 && flag5==0){
+        if(flag1 == 0 && flag2 == 0 && flag3 == 0 && flag4 == 0 && flag5 == 0){
             while (j<n){
                 Signaldata[size].NT = string_to_NTcode(networkcode);
                 Signaldata[size].STN = stationcode;
@@ -846,45 +833,45 @@ int main(){
                     break;
             }
         }
-        if(flag1!=0 || flag2!=0 || flag3!=0 || flag4!=0 || flag5!=0)
+        if(flag1 != 0 || flag2 != 0 || flag3 != 0 || flag4 != 0 || flag5 != 0)
             a++;    
     }
 
     // Generat the report for total information read.
 
-    F=2;
-    sout ="\nTotal invalid entries igored: ";
+    F = 2;
+    sout = "\nTotal invalid entries igored: ";
     slog << sout;
-    print(outputfile, logfile,slog.str(),sout,F); 
-    sout =itos(a);
+    print(outputfile,logfile,slog.str(),sout,F); 
+    sout = itos(a);
     slog << sout; 
-    print(outputfile, logfile,slog.str(),sout,F); 
-    sout ="\nTotal valid entries read: ";
+    print(outputfile,logfile,slog.str(),sout,F); 
+    sout = "\nTotal valid entries read: ";
     slog << sout;
-    print(outputfile, logfile,slog.str(),sout,F);
-    sout =itos(i-a-1);
+    print(outputfile,logfile,slog.str(),sout,F);
+    sout = itos(i-a-1);
     slog << sout; 
-    print(outputfile, logfile,slog.str(),sout,F);
-    sout ="\nSignal names produced: ";
+    print(outputfile,logfile,slog.str(),sout,F);
+    sout = "\nSignal names produced: ";
     slog << sout;
-    print(outputfile, logfile,slog.str(),sout,F);
+    print(outputfile,logfile,slog.str(),sout,F);
     sout = itos(size);
     slog << sout <<"\n";
     print(outputfile, logfile,slog.str(),sout,F);
-    F=1;
+    F = 1;
     sout = '\0';
     ss << itos(size) <<"\n";
     print(outputfile, logfile,ss.str(),sout,F);     
-    for (int j=0; j< size; j++){
+    for (int j = 0; j<size; j++){
         ss << eqinfor.ID << "." << NTcode_to_string(Signaldata[j].NT) << "." << Signaldata[j].STN << "." 
            << bandtype_to_string(Signaldata[j].B) << instrutype_to_string(Signaldata[j].I) << Signaldata[j].O <<"\n"; 
     }
-    F=1;
-    print(outputfile, logfile,ss.str(),sout,F); 
-    F=2;
+    F = 1;
+    print(outputfile,logfile,ss.str(),sout,F); 
+    F = 2;
     sout = "\nFinished!\n";
     slog << sout;
-    print(outputfile, logfile,slog.str(),sout,F);
+    print(outputfile,logfile,slog.str(),sout,F);
 
     return 0;
 }
